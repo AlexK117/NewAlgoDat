@@ -38,39 +38,28 @@ namespace Dictionary
 
     public virtual bool Insert(int data)
     {
-      Node newItem = new Node(data);
-
-      if (root == null)
+      if(root == null)
       {
-        root = newItem;
+        root = new Node(data);
         return true;
       }
-      else
-      {
-        Node current = root;
 
-        Node parent = null;
-        while (current != null)
+      Node tmp = new Node(data);
+      Node tmp_Parent = _searchPosAbove(data);
+
+      if(tmp_Parent != null)
+      {
+        tmp.parent= tmp_Parent;
+
+        if (tmp_Parent.data < data)
         {
-          parent = current;
-          if (data < current.data)
-          {
-            current = current.left;
-            if (current == null)//if the current.left is null
-            {
-              parent.left = newItem;//make parent.left store the new node
-              return true;
-            }
-          }
-          else
-          {
-            current = current.right;
-            if (current == null)
-            {
-              parent.right = newItem;
-              return true;
-            }
-          }
+          tmp_Parent.right = tmp;
+          return true;
+        }
+        else
+        {
+          tmp_Parent.left = tmp;
+          return true;
         }
       }
       return false;
@@ -181,7 +170,9 @@ namespace Dictionary
             }
             if (parent.data < current.data)
             {
-              parent.right = mostright;
+              parent.left = mostright;
+              current.left.parent = parent;
+              current.left.right = current.right;
             }
           }
         }
@@ -193,43 +184,32 @@ namespace Dictionary
       return true;
     }
 
-    public void Rotate(Node Bogdan)
+    protected void Rotate(Node Bogdan)
     {
-      Node parent = _searchPosAbove(Bogdan.data);
-
-
-      if (Bogdan.data < parent.data)
+      if (Bogdan.data < Bogdan.parent.data)
       {
-        rightRotate(Bogdan, parent);
+        rightRotate(Bogdan, Bogdan.parent);
       }
       else
       {
-        leftRotate(Bogdan, parent);
+        leftRotate(Bogdan, Bogdan.parent);
       }
     }
 
     private void rightRotate(Node Bogdan, Node parent)
     {
-      Node grandParent;
-
       parent.left = Bogdan.right;
       Bogdan.right = parent;
 
-      grandParent = _searchPosAbove(parent.data);
-
-      rotationFinish(Bogdan, parent, grandParent);
+      rotationFinish(Bogdan, parent, parent.parent);
     }
 
     private void leftRotate(Node Bogdan, Node parent)
     {
-      Node grandParent;
-
       parent.right = Bogdan.left;
       Bogdan.left = parent;
 
-      grandParent = _searchPosAbove(parent.data);
-
-      rotationFinish(Bogdan, parent, grandParent);
+      rotationFinish(Bogdan, parent, parent.parent);
     }
 
     private void rotationFinish(Node Bogdan, Node parent, Node grandParent)
@@ -250,27 +230,53 @@ namespace Dictionary
 
   class AVLTree : BinSearchTree
   {
-    /*public override bool Insert(int data)
-   {
-     base.Insert(data);
+  //  public override bool Insert(int data)
+  //  {
+  //    base.Insert(data);
 
-     if (isBalanced(data))
-       return true;
-     else
-       balance(data);
-   }
+  //    Node item = _search(data);
 
-   public override bool Delete(int data)
-   {
-     return false;
-   }
+  //    while (item.parent != null)
+  //    {
+  //      int currentBalance = isBalanced(item, item.parent);
 
-   //in class AVL 4 the time being... should probably be in a higher class, because Treap uses it as well
-   public bool isBalanced(Node n)
-   {
-     isBalanced();
-   }
-   */
+  //      //is the tree balanced? Note: not always!!
+  //      if (currentBalance == 0) //yes
+  //        break;
+  //      else if (currentBalance > 1 || currentBalance < -1) //no
+  //      {
+  //        balance(item); //mehrere balances??!!
+  //      }
+
+  //      item = parent;
+  //      parent = _searchPosAbove(item.data);
+  //    }
+
+  //  }
+
+  //  public override bool Delete(int data)
+  //  {
+  //    base.Delete(data);
+
+  //    //ausgleichs shit
+  //  }
+
+  //  private int isBalanced(Node item, Node parent)
+  //  {
+  //    if (item.data < parent.data)
+  //    {
+  //      return parent.balance += 1;
+  //    }
+  //    else
+  //    {
+  //      return parent.balance -= 1;
+  //    }
+  //  }
+
+  //  private void balance(Node item)
+  //  {
+  //    //Hier evtl Fallunterscheidung ob man RL oder LR oder normal L oder normal R rot machen muss.
+  //  }
   }
 
   class Treap : BinSearchTree
@@ -278,11 +284,12 @@ namespace Dictionary
 
     public override bool Insert(int data)
     {
-      base.Insert(data);
+      if (!base.Insert(data))
+        return false;
 
       Node Current = _search(data);
 
-      while (Current.priority < Current.parent.priority)
+      while (Current.parent != null && Current.priority < Current.parent.priority) 
       {
         Rotate(Current);
       }
@@ -298,22 +305,24 @@ namespace Dictionary
     public override bool Delete(int data)
     {
       Node Current = _search(data);
-
-      while (Current.left != null && Current.right != null)
+      if (Current != null)
       {
-        if (Current.right == null)
+        while (Current.left != null && Current.right != null)
         {
-          Rotate(Current.left);
+          if (Current.right == null)
+          {
+            Rotate(Current.left);
+          }
+          else
+          {
+            Rotate(Current.right);
+          }
         }
-        else
-        {
-          Rotate(Current.right);
-        }
+
+        Current = null;
+        return true;
       }
-
-      Current = null;
       return false;
-
     }
   }
 }

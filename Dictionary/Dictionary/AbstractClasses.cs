@@ -129,14 +129,15 @@ namespace Dictionary
 
   abstract class BinaryTree
   {
-    internal class Node
+    protected class Node
     {
       public int data;
       public int priority;
+      public int balance;
 
-      public Node left { get; set; }
-      public Node right { get; set; }
-      public Node parent { get; set; }
+      public Node left;
+      public Node right;
+      public Node parent;
 
       public Node() { }
 
@@ -176,20 +177,18 @@ namespace Dictionary
 
     protected Node _searchPosAbove(int data)  //Sucht Position des Vorgängers
     {
-      Node above = null;
       Node tmp = root;
 
       while (tmp != null)
       {
         if (tmp.data == data)                 //Falls Element bereits existiert
-          return above;
+          return null;
 
         if (data < tmp.data)
         {
           if (tmp.left == null)
             return tmp;
 
-          above = tmp;
           tmp = tmp.left;
         }
         else
@@ -197,7 +196,6 @@ namespace Dictionary
           if (tmp.right == null)
             return tmp;
 
-          above = tmp;
           tmp = tmp.right;
         }
       }
