@@ -209,6 +209,7 @@ namespace Dictionary
       parent.right = Bogdan.left;
       Bogdan.left = parent;
 
+
       rotationFinish(Bogdan, parent, parent.parent);
     }
 
@@ -230,53 +231,60 @@ namespace Dictionary
 
   class AVLTree : BinSearchTree
   {
-  //  public override bool Insert(int data)
-  //  {
-  //    base.Insert(data);
+    public override bool Insert(int data)
+    {
+      if (!base.Insert(data))
+         return false;
 
-  //    Node item = _search(data);
+      Node item = _search(data);
 
-  //    while (item.parent != null)
-  //    {
-  //      int currentBalance = isBalanced(item, item.parent);
+      while (item.parent != null)
+      {
+        int currentBalance = setBalance(item, item.parent);
 
-  //      //is the tree balanced? Note: not always!!
-  //      if (currentBalance == 0) //yes
-  //        break;
-  //      else if (currentBalance > 1 || currentBalance < -1) //no
-  //      {
-  //        balance(item); //mehrere balances??!!
-  //      }
+        //is the tree balanced? Note: not always!!
+        if (currentBalance == 0) //yes
+          break;
+        else if (currentBalance > 1 || currentBalance < -1) //no
+        {
+          balance(item); //mehrere balances??!!
+        }
 
-  //      item = parent;
-  //      parent = _searchPosAbove(item.data);
-  //    }
+        item = item.parent;
+      }
+      return true;
+    }
 
-  //  }
+    public override bool Delete(int data)
+    {
+      return base.Delete(data);
 
-  //  public override bool Delete(int data)
-  //  {
-  //    base.Delete(data);
+      //ausgleichs shit
+    }
 
-  //    //ausgleichs shit
-  //  }
+    private int setBalance(Node item, Node parent)
+    {
+      if (item.data < parent.data)
+      {
+        return parent.balance -= 1;
+      }
+      else
+      {
+        return parent.balance += 1;
+      }
+    }
 
-  //  private int isBalanced(Node item, Node parent)
-  //  {
-  //    if (item.data < parent.data)
-  //    {
-  //      return parent.balance += 1;
-  //    }
-  //    else
-  //    {
-  //      return parent.balance -= 1;
-  //    }
-  //  }
-
-  //  private void balance(Node item)
-  //  {
-  //    //Hier evtl Fallunterscheidung ob man RL oder LR oder normal L oder normal R rot machen muss.
-  //  }
+    private void balance(Node item)
+    {
+      //Hier evtl Fallunterscheidung ob man RL oder LR oder normal L oder normal R rot machen muss.
+      if (item.parent.balance > 1)
+      {
+        if (item.balance > 0)
+        {
+          Rotate(item);
+        }
+      }
+    }
   }
 
   class Treap : BinSearchTree
