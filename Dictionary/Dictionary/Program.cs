@@ -13,7 +13,7 @@ namespace Dictionary
 
     static void Main(string[] args)
     {
-            
+            /*
                   int switch_on = 0;
                   IDictionary Test = null;
                   string interfaceTyp = "";
@@ -263,9 +263,9 @@ namespace Dictionary
                       while (eingabe != "OP_switch");
                     }
                   }
-                  while (true);   //Endlose wiederholung
+                  while (true);   //Endlose wiederholung*/
 
-          /*  MultiSetUnsortedArray test = new MultiSetUnsortedArray();
+            MultiSetUnsortedArray test = new MultiSetUnsortedArray();
             test.Insert(2);
             test.Insert(1);
             test.Insert(3);
@@ -276,7 +276,7 @@ namespace Dictionary
             test.Print();
 
             test.Delete(2);
-            test.Print();*/
+            test.Print();
     }
   }
 }
