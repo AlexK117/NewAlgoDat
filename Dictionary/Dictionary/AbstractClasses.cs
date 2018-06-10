@@ -91,7 +91,7 @@ namespace Dictionary
   abstract class Array
   {
     protected const int n = 10;
-       
+
     public int[] array = new int[n];
        
         
@@ -121,25 +121,25 @@ namespace Dictionary
     }
 
     protected int _searchsorted(int elem)
-        {           
-            if(elem <= array[0])
-            {
-                return 0;
-            }
+    {
+      if (elem <= array[0]) // Fall 1: alle Werte sind größer als der einzufügende Wert
+      {
+        return 0;
+      }
 
-            for (int i=0;i<array.Length-1;i++)
-            {               
-                if(array[i] <= elem && elem <= array[i+1])
-                {
-                    return i+1;
-                }
-                else if(array[i]==0 && array[i+1]==0)
-                {
-                    return i;
-                }
-            }
-            return array.Length - 1;
+      for (int i = 0; i < array.Length - 1; i++) 
+      {// Fall 2: Der Wert muss in der mitte vom Array eingefügt werden
+        if (array[i] <= elem && elem <= array[i + 1])
+        {
+          return i + 1;
+        }// Fall 3: falls restlichen Plätze leer sind
+        else if (array[i] == 0 && array[i + 1] == 0)
+        {
+          return i;
         }
+      }//Fall 4: falls das Element größer als alle enthaltenen Werte hinten dran hängen an letzte Position
+      return array.Length - 1;
+    }
 
     public void Print()
     {
