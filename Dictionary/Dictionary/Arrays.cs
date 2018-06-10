@@ -65,13 +65,96 @@ namespace Dictionary
     }
   }
 
-  class MultiSetSortedArray : Array//, IMultiSetSorted
+  class MultiSetSortedArray : Array, IMultiSetSorted
   {
+    public virtual bool Search( int elem) 
+  {
+      int index = _search(elem);
+      if (index != -1)
+      {
+        if (array[index] == elem)
+        {
+          return true;
+        }
+      }
+      return false;
+      /*  int left = 0;
+        int right = array.Length - 1;
+        int index = (left + right) / 2;
+
+        do
+        {
+          if (array[index] < elem)
+          {
+            left = index + 1;
+          }
+          else
+          {
+            right = index - 1;
+          }
+        }
+
+        while (array[index] == elem || left > right);
+
+          if (array[index] == elem)
+          {
+            return true;
+          }
+          return false; */
+    }
+
+  public virtual bool Insert(int elem)
+  {
+      int index = _searchsorted(elem); // Position suchen 
+
+      if (index != array.Length - 1) // falls es nicht an letzte Position eingefügt werden muss
+      {// speichert Wert der um eins nach hinten verschoben werden muss
+        int aktval = array[index];
+
+        for (int i = index + 1; i < array.Length - 1; i++)
+        {
+          int nextval = array[i]; // speichert den Wert nach aktval
+          array[i] = aktval; // aktval wird um eins nach rechts verschoben
+          aktval = nextval;
+        }
+        array[index] = elem; // Element wird eingefügt
+        return true;
+      }
+      else // falls es an letzter Position eingefügt wird 
+      {
+        array[index] = elem;
+        return true;
+      }
+    }
+
+  public bool Delete(int elem)
+  {
+      int index = _search(elem);
+      if (index == -1) // falls Wert nicht vorhanden 
+      {
+        return false;
+      }
+      else 
+      {
+       for(int i= index; i < array.Length -1; i++)
+       {
+          array[i] = array[i + 1]; // Wert von rechts wird wird nach links verschoben und überschreibt/löscht Element
+       }
+      }
+      return true;
+    }
 
   }
 
-  class SetSortedArray : MultiSetSortedArray//, IMultiSetSorted
+  class SetSortedArray : MultiSetSortedArray, IMultiSetSorted
   {
-
+    public override bool Insert(int elem)
+    {
+      if (Search(elem)) 
+      {
+        return false;
+      }
+      return base.Insert(elem);
+    }
   }
 }
