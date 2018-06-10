@@ -22,14 +22,14 @@ namespace Dictionary
     }
 
     public virtual bool Insert(int elem)
-    {
-      int index = _search(0);
-      if (index != -1)
-      {
-        array[index] = elem;
-        return true;
-      }
-      return false;
+    {            
+        int index = _search(0);
+        if (index != -1)
+        {
+          array[index] = elem;
+          return true;
+        }
+        return false;       
     }
 
     public bool Delete(int elem)
@@ -67,11 +67,71 @@ namespace Dictionary
 
   class MultiSetSortedArray : Array//, IMultiSetSorted
   {
+        public bool Search(int elem)
+        {
+            int index = _search(elem);
 
+            if(index!=-1)
+            {
+                return true;
+            }
+            return false;
+        }
+        public virtual bool Insert(int elem)
+        {
+            
+            int index = _searchsorted(elem);
+
+            if (index != array.Length - 1)
+            {
+                int aktval = array[index];
+
+                for (int i = index + 1; i < array.Length - 1; i++)
+                {
+                    int nextval = array[i];
+                    array[i] = aktval;
+                    aktval = nextval;
+                }
+                array[index] = elem;
+                return true;
+            }
+
+            array[index] = elem;                       
+            return true;
+        }     
+
+        public bool Delete(int elem)
+        {
+            int index = _search(elem);
+            
+            if(index==-1)
+            {
+                return false;
+            }
+
+            else
+            {
+                for (int i = index; i < array.Length - 1; i++)
+                {
+                    array[i] = array[i + 1];                    
+                }
+            }
+            return true;
+        }
   }
 
-  class SetSortedArray : MultiSetSortedArray//, IMultiSetSorted
+  class SetSortedArray : MultiSetSortedArray//, ISetSorted
   {
-
+        public override bool Insert(int elem)
+        {
+            if(_search(elem)!=-1)
+            {
+                return false;
+            }
+            else
+            {
+                return base.Insert(elem);
+            }
+        }
   }
 }

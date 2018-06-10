@@ -90,9 +90,11 @@ namespace Dictionary
 
   abstract class Array
   {
-    protected const int n = 3;
+    protected const int n = 10;
+       
     public int[] array = new int[n];
-
+       
+        
     public int this[int Index]
     {
       get
@@ -117,6 +119,27 @@ namespace Dictionary
 
       return -1;
     }
+
+    protected int _searchsorted(int elem)
+        {           
+            if(elem <= array[0])
+            {
+                return 0;
+            }
+
+            for (int i=0;i<array.Length-1;i++)
+            {               
+                if(array[i] <= elem && elem <= array[i+1])
+                {
+                    return i+1;
+                }
+                else if(array[i]==0 && array[i+1]==0)
+                {
+                    return i;
+                }
+            }
+            return array.Length - 1;
+        }
 
     public void Print()
     {
