@@ -91,8 +91,10 @@ namespace Dictionary
   abstract class Array
   {
     protected const int n = 10;
-    public int[] array = new int[n];
 
+    public int[] array = new int[n];
+       
+        
     public int this[int Index]
     {
       get

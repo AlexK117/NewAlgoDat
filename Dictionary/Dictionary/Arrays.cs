@@ -22,14 +22,14 @@ namespace Dictionary
     }
 
     public virtual bool Insert(int elem)
-    {
-      int index = _search(0);
-      if (index != -1)
-      {
-        array[index] = elem;
-        return true;
-      }
-      return false;
+    {            
+        int index = _search(0);
+        if (index != -1)
+        {
+          array[index] = elem;
+          return true;
+        }
+        return false;       
     }
 
     public bool Delete(int elem)
@@ -150,7 +150,7 @@ namespace Dictionary
   {
     public override bool Insert(int elem)
     {
-      if (Search(elem)) 
+      if (Search(elem))
       {
         return false;
       }
