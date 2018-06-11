@@ -216,48 +216,60 @@ namespace Dictionary
             return true;
         }
 
-        protected void Rotate(Node Bogdan)
+        protected void Rotate(Node current)
         {
-            if (Bogdan.data < Bogdan.parent.data)
+            if (current.data < current.parent.data)
             {
-                rightRotate(Bogdan, Bogdan.parent);
+                rightRotate(current, current.parent);
             }
             else
             {
-                leftRotate(Bogdan, Bogdan.parent);
+                leftRotate(current, current.parent);
             }
         }
 
-        private void rightRotate(Node Bogdan, Node parent)
+        private void rightRotate(Node current, Node parent)
         {
-            parent.left = Bogdan.right;
-            Bogdan.right = parent;
+            parent.left = current.right;
+            //current.right.parent = parent;
+            current.right = parent;
+            //parent.parent = current;
+            
 
-            rotationFinish(Bogdan, parent, parent.parent);
-        }
-
-        private void leftRotate(Node Bogdan, Node parent)
-        {
-            parent.right = Bogdan.left;
-            Bogdan.left = parent;
-
-
-            rotationFinish(Bogdan, parent, parent.parent);
-        }
-
-        private void rotationFinish(Node Bogdan, Node parent, Node grandParent)
-        {
-            if (grandParent != null)
+            if (parent.parent != null)
             {
-                if (parent.data < grandParent.data)
-                {
-                    grandParent.left = Bogdan;
-                }
-                else
-                {
-                    grandParent.right = Bogdan;
-                }
+                rotationFinish(current, parent, parent.parent);
             }
+    }
+
+        private void leftRotate(Node current, Node parent)
+        {
+            parent.right = current.left;
+            //current.left.parent = parent;
+            current.left = parent;
+            //parent.parent = current;
+
+            if (parent.parent != null)
+            {   
+                rotationFinish(current, parent, parent.parent);
+            }
+        }
+
+        private void rotationFinish(Node current, Node parent, Node grandParent)
+        {
+            
+            if (parent.data < grandParent.data)
+            {
+                grandParent.left = current;
+            
+            }
+            else
+            {
+                grandParent.right = current;
+            }
+
+            current.parent = grandParent;
+
         }
     }
 
@@ -327,17 +339,21 @@ namespace Dictionary
             if (!base.Insert(data))
                 return false;
 
+
             Node Current = _search(data);
 
+            //Set Priority of our inserted Node;
+            Random rnd = new Random();
+            int prio = rnd.Next(0, 65536);
+
+            Current.priority = prio;
+
+            //Rotate the current node up until the priority is at the correct position
             while (Current.parent != null && Current.priority < Current.parent.priority)
             {
                 Rotate(Current);
             }
 
-            Random rnd = new Random();
-            int prio = rnd.Next(0, 65536);
-
-            Current.priority = prio;
 
             return true;
         }
@@ -345,6 +361,8 @@ namespace Dictionary
         public override bool Delete(int data)
         {
             Node Current = _search(data);
+
+            //Node gets rotated down until its a leaf, then gets deleted
             if (Current != null)
             {
                 while (Current.left != null && Current.right != null)
