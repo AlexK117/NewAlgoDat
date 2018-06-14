@@ -333,27 +333,26 @@ namespace Dictionary
 
     private void balance(Node item)
     {
-      //Hier evtl Fallunterscheidung ob man RL oder LR oder normal L oder normal R rot machen muss.
       if (item.parent.balance > 1) //Ab parent hängt Baum nach rechts
       {
         if (item.balance > 0) //danach hängt Baum auch nach rechts => einzel-links-rotation
         {
           Rotate(item);
         }
-        else
+        else if (item.balance < 0) //danach hängt Baum aber nach links => rechts-links doppel-rotation
         {
-          Rotate(item.left);
-        }
+          Rotate(item.left); //!!!!!!!!!!!!!!!!!!!!!!!!!! spinnt noch nach erster rechts rot, weil danach die balance des rotierten knotens nicht geupdatet wird in der while
+        }										//!!!!!!!!!!!!!!!!!!!!!!!!!! müsste iwi einen schritt zurück in der while oder iwi anders die balance des knotens updaten!
       }
       else if (item.parent.balance < -1) //Ab parent hängt Baum nach links
       {
 
-        if (item.balance < 0) // danach hängt Baum auch nach links => einzel links rotation
+        if (item.balance < 0) //danach hängt Baum auch nach links => einzel links rotation
         {
           Rotate(item);
         }
-        else
-        {
+        else if (item.balance < 0) //danach hängt Baum aber nach rechts => links-rechts doppel-rotation
+				{
           Rotate(item.right);
         }
       }
