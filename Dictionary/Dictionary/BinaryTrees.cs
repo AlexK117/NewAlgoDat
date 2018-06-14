@@ -311,7 +311,10 @@ namespace Dictionary
           balance(item); //mehrere balances??!!
         }
 
-        item = item.parent;
+        if (item.parent != null)
+        {
+          item = item.parent;
+        }
       }
       return true;
     }
@@ -338,11 +341,27 @@ namespace Dictionary
     private void balance(Node item)
     {
       //Hier evtl Fallunterscheidung ob man RL oder LR oder normal L oder normal R rot machen muss.
-      if (item.parent.balance > 1)
+      if (item.parent.balance > 1) //Ab parent hängt Baum nach rechts
       {
-        if (item.balance > 0)
+        if (item.balance > 0) //danach hängt Baum auch nach rechts => einzel-links-rotation
         {
           Rotate(item);
+        }
+        else
+        {
+          Rotate(item.left);
+        }
+      }
+      else if (item.parent.balance < -1) //Ab parent hängt Baum nach links
+      {
+
+        if (item.balance < 0) // danach hängt Baum auch nach links => einzel links rotation
+        {
+          Rotate(item);
+        }
+        else
+        {
+          Rotate(item.right);
         }
       }
     }
