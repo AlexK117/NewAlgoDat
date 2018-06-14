@@ -13,7 +13,7 @@ namespace Dictionary
 
     static void Main(string[] args)
     {
-            /*
+            
                   int switch_on = 0;
                   IDictionary Test = null;
                   string interfaceTyp = "";
@@ -264,6 +264,7 @@ namespace Dictionary
                     }
                   }
                   while (true);   //Endlose wiederholung*/
+      
 
             MultiSetUnsortedArray test = new MultiSetUnsortedArray();
             test.Insert(2);
