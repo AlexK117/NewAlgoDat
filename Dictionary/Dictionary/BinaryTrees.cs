@@ -316,13 +316,6 @@ namespace Dictionary
       return true;
     }
 
-    public override bool Delete(int data)
-    {
-      return base.Delete(data);
-
-      //ausgleichs shit
-    }
-
     private int setBalance(Node item, Node parent)
     {
       if (item.data < parent.data)
@@ -346,7 +339,14 @@ namespace Dictionary
         }
       }
     }
-  }
+
+		public override bool Delete(int data)
+		{
+			return base.Delete(data);
+
+			//ausgleichs shit
+		}
+	}
 
   class Treap : BinSearchTree
   {
