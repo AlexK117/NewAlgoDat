@@ -10,7 +10,7 @@ namespace Dictionary
   {
     public BinSearchTree()    //Ich glaub das ist eh default-Einstellung (Eugen)
     {
-       root = null;
+      root = null;
     }
 
     public void Print()
@@ -301,33 +301,49 @@ namespace Dictionary
 
       while (item.parent != null)
       {
-        int currentBalance = setBalance(item, item.parent);
+        int currentBalance = setBalanceInsert(item);
 
         //is the tree balanced? Note: not always!!
-        if (currentBalance == 0) //yes
+        if (currentBalance == 0 || currentBalance > 1 || currentBalance < -1) //yes
           break;
-        else if (currentBalance > 1 || currentBalance < -1) //no
-        {
-          balance(item); //mehrere balances??!!
-        }
 
         if (item.parent != null)
         {
           item = item.parent;
         }
       }
+
+      item = _search(data);
+
+      while (item.parent != null)
+      {
+        balance(item);
+        item = item.parent;
+      }
+
       return true;
     }
 
-    private int setBalance(Node item, Node parent)
+    private int setBalanceInsert(Node item)
     {
-      if (item.data < parent.data)
+      if (item.data < item.parent.data)
       {
-        return parent.balance -= 1;
+        return item.parent.balance -= 1;
       }
       else
       {
-        return parent.balance += 1;
+        return item.parent.balance += 1;
+      }
+    }
+    private int setBalanceDelete(Node item)
+    {
+      if (item.data < item.parent.data)
+      {
+        return item.parent.balance += 1;
+      }
+      else
+      {
+        return item.parent.balance -= 1;
       }
     }
 
@@ -337,34 +353,210 @@ namespace Dictionary
       {
         if (item.balance > 0) //danach hängt Baum auch nach rechts => einzel-links-rotation
         {
+          item.balance = 0;
+          item.parent.balance = 0;
           Rotate(item);
         }
         else if (item.balance < 0) //danach hängt Baum aber nach links => rechts-links doppel-rotation
         {
-          Rotate(item.left); //!!!!!!!!!!!!!!!!!!!!!!!!!! spinnt noch nach erster rechts rot, weil danach die balance des rotierten knotens nicht geupdatet wird in der while
-        }										//!!!!!!!!!!!!!!!!!!!!!!!!!! müsste iwi einen schritt zurück in der while oder iwi anders die balance des knotens updaten!
+          if (item.left.balance < 0)
+          {
+            item.parent.balance = 0;
+            item.balance = 1;
+            item.left.balance = 0;
+          }
+          else if (item.left.balance == 0)
+          {
+            item.parent.balance = 0;
+            item.balance = 0;
+            item.left.balance = 0;
+          }
+          else if (item.left.balance > 0)
+          {
+            item.parent.balance = -1;
+            item.balance = 0;
+            item.left.balance = 0;
+          }
+
+          Rotate(item.left);
+          Rotate(item.parent);
+        }
+        else
+        {
+          balance(item.parent.right);
+        }
       }
       else if (item.parent.balance < -1) //Ab parent hängt Baum nach links
       {
-
         if (item.balance < 0) //danach hängt Baum auch nach links => einzel links rotation
         {
+          item.balance = 0;
+          item.parent.balance = 0;
           Rotate(item);
         }
-        else if (item.balance < 0) //danach hängt Baum aber nach rechts => links-rechts doppel-rotation
-				{
+        else if (item.balance > 0) //danach hängt Baum aber nach rechts => links-rechts doppel-rotation
+        {
+
+          if (item.right.balance < 0)
+          {
+            item.parent.balance = 1;
+            item.balance = 0;
+            item.right.balance = 0;
+          }
+          else if (item.right.balance == 0)
+          {
+            item.parent.balance = 0;
+            item.balance = 0;
+            item.right.balance = 0;
+          }
+          else if (item.right.balance > 0)
+          {
+            item.parent.balance = 0;
+            item.balance = -1;
+            item.right.balance = 0;
+          }
+
           Rotate(item.right);
+          Rotate(item.parent);
+        }
+        else
+        {
+          balance(item.parent.left);
         }
       }
     }
 
-		public override bool Delete(int data)
-		{
-			return base.Delete(data);
+    public override bool Delete(int data)
+    {
+      Node item = _search(data);
+      Node parent = item.parent;
+      Node tmp = item.parent;
 
-			//ausgleichs shit
-		}
-	}
+      if (item.left != null && item.right == null) ////1. Fall item hat linkes child
+      {
+        while (item.parent != null)
+        {
+          int currentBalance = setBalanceDelete(item);
+
+          if (currentBalance == 0 || currentBalance > 1 || currentBalance < -1)
+            break;
+
+
+
+          if (tmp.parent != null)
+          {
+            tmp = tmp.parent;
+          }
+        }
+
+        if (!base.Delete(data))
+          return false;
+
+        Node child = parent.left;
+
+        balance(child); // immernoch zugriff auf item obwohl gelöscht?!
+
+        return true;
+      }
+
+      else if (item.left == null && item.right != null) ////2. Fall item hat rechtes child
+      {
+        while (item.parent != null)
+        {
+          int currentBalance = setBalanceDelete(item);
+
+          if (currentBalance == 0 || currentBalance > 1 || currentBalance < -1)
+            break;
+
+
+
+          if (tmp.parent != null)
+          {
+            tmp = tmp.parent;
+          }
+        }
+
+        if (!base.Delete(data))
+          return false;
+
+        Node child = parent.right;
+
+        balance(child); // immernoch zugriff auf item obwohl gelöscht?!
+
+        return true;
+      }
+
+      else if (item.left == null && item.right == null) ////3. Fall item hat keine children
+      {
+        //experimental
+        while (item.parent != null)
+        {
+          int currentBalance = setBalanceDelete(item);
+
+          if (currentBalance == 0 || currentBalance > 1 || currentBalance < -1)
+            break;
+
+
+
+          if (tmp.parent != null)
+          {
+            tmp = tmp.parent;
+          }
+        }
+
+        if (!base.Delete(data))
+          return false;
+        
+
+        balance(item); // immernoch zugriff auf item obwohl gelöscht?!
+
+        return true;
+      }
+      else  //2. Fall: Gelöschter Node hat 2 children
+      {
+        Node mostright = item.left;
+        Node mrparent = item;
+
+        Node toBalance = mostright.parent.right;
+
+        while (mostright.right != null)
+        {
+          mrparent = mostright;
+          mostright = mostright.right;
+          toBalance = mostright.parent.left;
+        }
+
+
+
+
+        //experimental
+        while (mostright.parent != null)
+        {
+          setBalanceDelete(mostright);
+
+          if (mostright.parent != null)
+          {
+            mostright = mostright.parent;
+          }
+        }
+
+
+
+        Node right = item.right;
+
+        if (!base.Delete(data))
+          return false;
+
+
+        balance(toBalance);
+        return true;
+
+      }
+
+
+      //ausgleichs shit
+    }
+  }
 
   class Treap : BinSearchTree
   {
