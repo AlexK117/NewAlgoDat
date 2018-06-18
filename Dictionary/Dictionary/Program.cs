@@ -36,7 +36,7 @@ namespace Dictionary
             Test = new MultiSetSortedLinkedList();
             break;
           case 2:
-            //Test = new MultiSetSortedArray();    
+            Test = new MultiSetSortedArray();    
             break;
 
           default:
@@ -97,7 +97,7 @@ namespace Dictionary
             Test = new SetSortedLinkedList();
             break;
           case 2:
-            //Test = new SetSortedArray();
+            Test = new SetSortedArray();
             break;
           case 3:
             Test = new BinSearchTree();
@@ -139,10 +139,10 @@ namespace Dictionary
             Test = new SetUnsortedArray();
             break;
           case 3:
-            //Test = new HashTabSepChain();
+            Test = new HashTabSepChain();
             break;
           case 4:
-            // Test = new HashTabQuadProb();
+            Test = new HashTabQuadProb();
             break;
 
           default:
@@ -262,21 +262,9 @@ namespace Dictionary
           while (eingabe != "OP_switch");
         }
       }
-      while (true);   //Endlose wiederholung*/
+      while (true);   //Endlose wiederholung
 
 
-      MultiSetUnsortedArray test = new MultiSetUnsortedArray();
-      test.Insert(2);
-      test.Insert(1);
-      test.Insert(3);
-      test.Insert(2);
-      test.Insert(-1);
-      //Console.WriteLine(test.Delete(5));
-
-      test.Print();
-
-      test.Delete(2);
-      test.Print();
     }
   }
 }

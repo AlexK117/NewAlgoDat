@@ -41,7 +41,7 @@ namespace Dictionary
     public void Print()
     {
       for (ListElement tmp = start; tmp != null; tmp++)
-        Console.WriteLine(tmp);
+        Console.Write(tmp + "   ");
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ namespace Dictionary
 
   abstract class Array
   {
-    protected const int n = 10;
+    protected const int n = 7;
 
     public int[] array = new int[n];
        
@@ -141,7 +141,7 @@ namespace Dictionary
       return array.Length - 1;
     }
 
-    public void Print()
+    public virtual void Print()
     {
       foreach (int elem in array)
       {
@@ -259,6 +259,14 @@ namespace Dictionary
 
   abstract class HashFkt : Array
   {
+    //Groesse der Hashtabelle muss kongruent zu 3 mod 4 und eine Primzahl sein: 7, 11, 19, 23...
+    public static int hashTableSize { get; set; } = Array.n;
+
+    //Hashfunktion Divisionsverfahren
+    protected int GetHashValue(int key)
+    {
+      return key % hashTableSize;
+    }
 
   }
 }

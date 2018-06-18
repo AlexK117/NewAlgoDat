@@ -454,7 +454,7 @@ namespace Dictionary
 
         Node child = parent.left;
 
-        balance(child); // immernoch zugriff auf item obwohl gelöscht?!
+        balance(child); 
 
         return true;
       }
@@ -481,7 +481,7 @@ namespace Dictionary
 
         Node child = parent.right;
 
-        balance(child); // immernoch zugriff auf item obwohl gelöscht?!
+        balance(child); 
 
         return true;
       }
@@ -508,7 +508,7 @@ namespace Dictionary
           return false;
         
 
-        balance(item); // immernoch zugriff auf item obwohl gelöscht?!
+        balance(item); 
 
         return true;
       }

@@ -13,7 +13,7 @@ namespace Dictionary
       int index = _search(elem);
       if (index != -1)
       {
-        if (array[index] == elem)
+        if (array[index] == elem && elem != 0)
         {
           return true;
         }
@@ -43,7 +43,7 @@ namespace Dictionary
 
       int index = _search(elem);
 
-      if (index != -1)
+      if (index != -1 && elem != 0)
       {
         array[index] = array[i];
         array[i] = 0;
@@ -72,35 +72,13 @@ namespace Dictionary
       int index = _search(elem);
       if (index != -1)
       {
-        if (array[index] == elem)
+        if (array[index] == elem && elem != 0)
         {
           return true;
         }
       }
       return false;
-      /*  int left = 0;
-        int right = array.Length - 1;
-        int index = (left + right) / 2;
-
-        do
-        {
-          if (array[index] < elem)
-          {
-            left = index + 1;
-          }
-          else
-          {
-            right = index - 1;
-          }
-        }
-
-        while (array[index] == elem || left > right);
-
-          if (array[index] == elem)
-          {
-            return true;
-          }
-          return false; */
+      
     }
 
   public virtual bool Insert(int elem)
@@ -130,7 +108,7 @@ namespace Dictionary
   public bool Delete(int elem)
   {
       int index = _search(elem);
-      if (index == -1) // falls Wert nicht vorhanden 
+      if (index == -1 || elem == 0) // falls Wert nicht vorhanden 
       {
         return false;
       }
