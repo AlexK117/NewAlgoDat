@@ -318,6 +318,8 @@ namespace Dictionary
       while (item.parent != null)
       {
         balance(item);
+				if (item == root)
+					break;
         item = item.parent;
       }
 
@@ -334,7 +336,7 @@ namespace Dictionary
       {
         return item.parent.balance += 1;
       }
-    }
+    } 
     private int setBalanceDelete(Node item)
     {
       if (item.data < item.parent.data)
@@ -347,32 +349,36 @@ namespace Dictionary
       }
     }
 
-    private void balance(Node item)
+		/*Hier wird entschieden welche Rotation aufgerufen wird und wie sich die Balancefaktoren dadurch verändern*/
+		private void balance(Node item)
     {
-      if (item.parent.balance > 1) //Ab parent hängt Baum nach rechts
+			//Ab parent hängt Baum nach rechts
+			if (item.parent.balance > 1) 
       {
-        if (item.balance > 0) //danach hängt Baum auch nach rechts => einzel-links-rotation
+				//danach hängt Baum auch nach rechts => einzel-links-rotation
+				if (item.balance > 0) 
         {
           item.balance = 0;
           item.parent.balance = 0;
           Rotate(item);
         }
-        else if (item.balance < 0) //danach hängt Baum aber nach links => rechts-links doppel-rotation
+				//danach hängt Baum aber nach links => rechts-links doppel-rotation
+				else if (item.balance < 0) 
         {
-          if (item.left.balance < 0)
-          {
+          if (item.left.balance < 0) //Geschwister-Teilbaum hängt nach links
+					{
             item.parent.balance = 0;
             item.balance = 1;
             item.left.balance = 0;
           }
-          else if (item.left.balance == 0)
-          {
+          else if (item.left.balance == 0) //Geschwister-Teilbaum ist der Baum ausgeglichen
+					{
             item.parent.balance = 0;
             item.balance = 0;
             item.left.balance = 0;
           }
-          else if (item.left.balance > 0)
-          {
+          else if (item.left.balance > 0) //Geschwister-Teilbaum hängt nach rechts
+					{
             item.parent.balance = -1;
             item.balance = 0;
             item.left.balance = 0;
@@ -381,35 +387,39 @@ namespace Dictionary
           Rotate(item.left);
           Rotate(item.parent);
         }
+				//danach ist der Baum ausgeglichen
         else
         {
           balance(item.parent.right);
         }
       }
-      else if (item.parent.balance < -1) //Ab parent hängt Baum nach links
+			//Ab parent hängt Baum nach links
+			else if (item.parent.balance < -1) 
       {
-        if (item.balance < 0) //danach hängt Baum auch nach links => einzel links rotation
+				//danach hängt Baum auch nach links => einzel links rotation
+				if (item.balance < 0) 
         {
           item.balance = 0;
           item.parent.balance = 0;
           Rotate(item);
         }
-        else if (item.balance > 0) //danach hängt Baum aber nach rechts => links-rechts doppel-rotation
+				//danach hängt Baum aber nach rechts => links-rechts doppel-rotation
+				else if (item.balance > 0) 
         {
 
-          if (item.right.balance < 0)
+          if (item.right.balance < 0) //Geschwister-Teilbaum hängt nach links
           {
             item.parent.balance = 1;
             item.balance = 0;
             item.right.balance = 0;
           }
-          else if (item.right.balance == 0)
+          else if (item.right.balance == 0) //Geschwister-Teilbaum ist ausgeglichen
           {
             item.parent.balance = 0;
             item.balance = 0;
             item.right.balance = 0;
           }
-          else if (item.right.balance > 0)
+          else if (item.right.balance > 0) //Geschwister-Teilbaum hängt nach rechts
           {
             item.parent.balance = 0;
             item.balance = -1;
@@ -418,9 +428,10 @@ namespace Dictionary
 
           Rotate(item.right);
           Rotate(item.parent);
-        }
-        else
-        {
+				}
+				//danach ist der Baum ausgeglichen
+				else
+				{
           balance(item.parent.left);
         }
       }
@@ -429,86 +440,102 @@ namespace Dictionary
     public override bool Delete(int data)
     {
       Node item = _search(data);
-      Node parent = item.parent;
-      Node tmp = item.parent;
+			if (item == null)
+				return false;
+			Node parent = item.parent;
+      Node tmp = item;
 
       if (item.left != null && item.right == null) ////1. Fall item hat linkes child
       {
-        while (item.parent != null)
+				//Anpassen der Balancefaktoren bevor das item gelöscht wird
+				while (tmp.parent != null)
         {
-          int currentBalance = setBalanceDelete(item);
+					int currentBalance;
+					if (tmp.parent.balance == 0) // wenn parent balance 0 war dann verändert sich die Höhe dieses Teilbaumes und dadurch die oberen bf's durch das anpassen der bf's nicht also hier stoppen
+					{
+						currentBalance = setBalanceDelete(tmp);
+						break;
+					}
 
-          if (currentBalance == 0 || currentBalance > 1 || currentBalance < -1)
-            break;
+					currentBalance = setBalanceDelete(tmp);
 
+					if (currentBalance > 1 || currentBalance < -1)
+						break;
 
-
-          if (tmp.parent != null)
-          {
-            tmp = tmp.parent;
-          }
+					tmp = tmp.parent;
         }
 
         if (!base.Delete(data))
           return false;
 
-        Node child = parent.left;
-
-        balance(child); 
+				if (item.parent != null)
+				{
+					Node sibling = parent.left; //für den Fall das es hier unausgeglichen wird => beim Geschwisterknoten balancen
+					balance(sibling);
+				}
 
         return true;
       }
 
       else if (item.left == null && item.right != null) ////2. Fall item hat rechtes child
       {
-        while (item.parent != null)
+				//Anpassen der Balancefaktoren bevor das item gelöscht wird
+				while (tmp.parent != null)
         {
-          int currentBalance = setBalanceDelete(item);
+					int currentBalance;
+					if (tmp.parent.balance == 0) // wenn parent balance 0 war dann verändert sich die Höhe dieses Teilbaumes und dadurch die oberen bf's durch das anpassen der bf's nicht also hier stoppen
+					{
+						currentBalance = setBalanceDelete(tmp);
+						break;
+					}
 
-          if (currentBalance == 0 || currentBalance > 1 || currentBalance < -1)
+					currentBalance = setBalanceDelete(tmp);
+
+					if (currentBalance > 1 || currentBalance < -1)
             break;
 
-
-
-          if (tmp.parent != null)
-          {
-            tmp = tmp.parent;
-          }
+          tmp = tmp.parent;
         }
 
         if (!base.Delete(data))
           return false;
 
-        Node child = parent.right;
-
-        balance(child); 
+				if (item.parent != null)
+				{
+				  Node sibling = parent.right; //für den Fall das es hier unausgeglichen wird => beim Geschwisterknoten balancen
+					balance(sibling);
+				}
 
         return true;
       }
 
       else if (item.left == null && item.right == null) ////3. Fall item hat keine children
       {
-        //experimental
-        while (item.parent != null)
+        //Anpassen der Balancefaktoren bevor das item gelöscht wird
+        while (tmp.parent != null)
         {
-          int currentBalance = setBalanceDelete(item);
+					int currentBalance;
+					if (tmp.parent.balance == 0) // wenn parent balance 0 war dann verändert sich die Höhe dieses Teilbaumes und dadurch die oberen bf's durch das anpassen der bf's nicht also hier stoppen
+					{
+						currentBalance = setBalanceDelete(tmp);
+						break;
+					}
 
-          if (currentBalance == 0 || currentBalance > 1 || currentBalance < -1)
+					currentBalance = setBalanceDelete(tmp);
+
+          if (currentBalance > 1 || currentBalance < -1)
             break;
 
-
-
-          if (tmp.parent != null)
-          {
-            tmp = tmp.parent;
-          }
+					tmp = tmp.parent;
         }
 
         if (!base.Delete(data))
           return false;
-        
 
-        balance(item); 
+				if (item.parent != null)
+				{
+					balance(item);
+				}
 
         return true;
       }
@@ -516,45 +543,41 @@ namespace Dictionary
       {
         Node mostright = item.left;
         Node mrparent = item;
-
         Node toBalance = mostright.parent.right;
 
+				//Symmetrischer Vorgänger Suche
         while (mostright.right != null)
         {
           mrparent = mostright;
           mostright = mostright.right;
-          toBalance = mostright.parent.left;
         }
 
+				tmp = mostright;
 
-
-
-        //experimental
-        while (mostright.parent != null)
+				//Balance-Abgleich ab Symmetrischem Vorgänger
+        while (tmp.parent != null)
         {
-          setBalanceDelete(mostright);
+          setBalanceDelete(tmp);
 
-          if (mostright.parent != null)
+          if (tmp.parent != null)
           {
-            mostright = mostright.parent;
+            tmp = tmp.parent;
           }
         }
 
-
-
-        Node right = item.right;
+				//Balancefaktor vom gelöschten Knoten auf den der hier hin verschoben wird übertragen
+				mostright.balance = item.balance;
 
         if (!base.Delete(data))
           return false;
 
-
-        balance(toBalance);
+				if (mostright.parent != null)
+				{
+					toBalance = mostright.parent.left;
+					balance(toBalance); 
+				}
         return true;
-
       }
-
-
-      //ausgleichs shit
     }
   }
 

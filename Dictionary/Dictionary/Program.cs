@@ -13,10 +13,11 @@ namespace Dictionary
 
     static void Main(string[] args)
     {
+			
       int switch_on = 0;
       IDictionary Test = null;
       string interfaceTyp = "";
-
+			
       void askMultiSetSorted()
       {
         interfaceTyp = "MultiSetSorted";
