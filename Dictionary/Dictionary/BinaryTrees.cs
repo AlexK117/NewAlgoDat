@@ -218,6 +218,7 @@ namespace Dictionary
 
     protected void Rotate(Node current)
     {
+      //Decides wether we need a left- or right rotation.
       if (current.data < current.parent.data)
       {
         rightRotate(current, current.parent);
@@ -236,7 +237,6 @@ namespace Dictionary
         current.right.parent = parent;
       }
       current.right = parent;
-      //parent.parent = current;
 
       if (parent.parent != null)
       {
@@ -258,7 +258,6 @@ namespace Dictionary
         current.left.parent = parent;
       }
       current.left = parent;
-      //parent.parent = current;
 
       if (parent.parent != null)
       {
@@ -599,7 +598,7 @@ namespace Dictionary
       int prio = rnd.Next(0, 100);
 
       Current.priority = prio;
-      Console.WriteLine(Current.priority);
+      //Console.WriteLine(Current.priority);  for testing purposes
 
       //Rotate the current node up until the priority is at the correct position
       while (Current.parent != null && Current.priority < Current.parent.priority)
