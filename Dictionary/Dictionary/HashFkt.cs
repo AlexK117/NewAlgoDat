@@ -44,12 +44,11 @@ namespace Dictionary
     public bool Delete(int element)
     {
       int bucket = GetHashValue(element);
-      bool exists = hashTableLL[bucket].Search(element);
 
-      if (hashTableLL[bucket] != null && exists)
+      if (hashTableLL[bucket] != null)
       {
-        hashTableLL[bucket].Delete(element);
-        return true;
+        bool deleted = hashTableLL[bucket].Delete(element);
+        return deleted;
       }
       else
       {
